@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Vantage - Current News</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eaf6ff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #0074d9;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        #news-container {
+            padding: 20px;
+        }
+        .news-item {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .news-item h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #0074d9;
+        }
+        .news-item a {
+            color: #0074d9;
+            text-decoration: none;
+        }
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+        .news-item p {
+            margin: 5px 0;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #0074d9;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Flood Vantage - Latest News</h1>
+        <p>Stay updated with the latest flood-related news.</p>
+    </header>
+    <div id="news-container">
+        <p>Loading news...</p>
+    </div>
+    <footer>
+        &copy; 2024 Flood Vantage. All Rights Reserved.
+    </footer>
+
+    <script>
+        const API_KEY = "22471273ed01b1bdbbaadfd2de4006ea";
+        const BASE_URL = "https://api.mediastack.com/v1/news";
+
+        async function fetchNews() {
+            const newsContainer = document.getElementById("news-container");
+            try {
+                const response = await fetch(`${BASE_URL}?access_key=${API_KEY}&keywords=flood&languages=en&limit=10`);
+                const data = await response.json();
+
+                if (data && data.data && data.data.length > 0) {
+                    newsContainer.innerHTML = "";
+                    data.data.forEach(news => {
+                        const newsItem = document.createElement("div");
+                        newsItem.className = "news-item";
+
+                        newsItem.innerHTML = `
+                            <h3><a href="${news.url}" target="_blank">${news.title}</a></h3>
+                            <p>${news.description || "No description available."}</p>
+                            <p><small>Source: ${news.source} | Published on: ${new Date(news.published_at).toLocaleDateString()}</small></p>
+                        `;
+                        newsContainer.appendChild(newsItem);
+                    });
+                } else {
+                    newsContainer.innerHTML = "<p>No news found related to floods.</p>";
+                }
+            } catch (error) {
+                newsContainer.innerHTML = "<p>Failed to fetch news. Please try again later.</p>";
+                console.error("Error fetching news:", error);
+            }
+        }
+
+        fetchNews();
+    </script>
+</body>
+</html>
